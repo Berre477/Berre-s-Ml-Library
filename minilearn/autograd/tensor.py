@@ -86,4 +86,8 @@ class Tensor:
 
         out.backward = vjp
         return out
+
+    def __repr__(self):
+        return f"Tensor has a shape of {self.data.shape}, and data = {self.data}"
+    
     
