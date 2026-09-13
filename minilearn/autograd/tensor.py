@@ -21,3 +21,42 @@ class Tensor:
     def __init__(self,data,parents):
         self.data = np.array(data,dtype=np.float32)
         self.grad = np.zeros_like(self.data)
+        self.prev_par = set(parents)
+        self.backward = None
+
+
+    def backward(self):
+        """
+        Executes reverse-mode diff using topological sort
+        """
+
+        topo = []
+        vis= set()
+
+        def build_topo(node):
+            if node not in vis:
+                vis.add(node)
+                for parent in node.prev_par:
+                    build_topo(parent)
+                topo.append(node)
+
+        build_topo(self)
+
+        self.grad = np.ones_like(self.data) #(dOut/dOut = 1.0)
+
+        #Travese DAG in reverse topological order
+        for node in reversed(topo):
+            node.backward()
+
+    def __add__(self,other):
+        other = other if isinstance(other,Tensor) else Tensor(other)
+        out = Tensor(self.data + other.data,parents=(self,other))
+
+        def vjp():
+            self.grad += unbroadcast(out.grad,self.data.shape)
+            other.grad += unbroadcast(out.grad,other.data.shape)
+
+        out.backward = vjp
+        return out
+
+
