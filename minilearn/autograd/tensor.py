@@ -60,3 +60,24 @@ class Tensor:
         return out
 
 
+    def __sub__(self,other):
+        return self + (-other)
+
+    def __rsub__(self, other):
+        return Tensor(other) - self
+
+    def __radd__(self, other):
+        return self + other
+
+
+    def __neg__(self):
+        return self * -1.0
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __mul__(self, other):
+        other = other if isinstance(other,Tensor) else Tensor(other)
+        out = Tensor(self.data * other.data,parents=(self,other))
+        
+    
