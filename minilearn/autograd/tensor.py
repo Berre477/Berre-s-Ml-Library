@@ -18,7 +18,7 @@ def unbroadcast(grad,target_shape):
     return grad
 
 class Tensor:
-    def __init__(self,data,parents):
+    def __init__(self,data,parents = ()):
         self.data = np.array(data,dtype=np.float32)
         self.grad = np.zeros_like(self.data)
         self.prev_par = set(parents)
@@ -90,4 +90,7 @@ class Tensor:
     def __repr__(self):
         return f"Tensor has a shape of {self.data.shape}, and data = {self.data}"
     
-    
+
+t =Tensor([1,3],)
+t + 1
+print(t)
