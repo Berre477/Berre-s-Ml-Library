@@ -79,5 +79,11 @@ class Tensor:
     def __mul__(self, other):
         other = other if isinstance(other,Tensor) else Tensor(other)
         out = Tensor(self.data * other.data,parents=(self,other))
-        
+
+        def vjp():
+            self.grad += unbroadcast(other.data * out.grad,self.data.shape)
+            other.grad += unbroadcast(self.data * out.grad ,other.data.shape)
+
+        out.backward = vjp
+        return out
     
