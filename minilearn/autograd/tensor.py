@@ -22,7 +22,7 @@ class Tensor:
         self.data = np.array(data,dtype=np.float32)
         self.grad = np.zeros_like(self.data)
         self.prev_par = set(parents)
-        self.backward = None
+        self.vjp = None
 
 
     def backward(self):
@@ -46,7 +46,8 @@ class Tensor:
 
         #Travese DAG in reverse topological order
         for node in reversed(topo):
-            node.backward()
+            if node.vjp is not None:
+                node.vjp()
 
     def __add__(self,other):
         other = other if isinstance(other,Tensor) else Tensor(other)
@@ -56,7 +57,7 @@ class Tensor:
             self.grad += unbroadcast(out.grad,self.data.shape)
             other.grad += unbroadcast(out.grad,other.data.shape)
 
-        out.backward = vjp
+        out.vjp = vjp
         return out
 
 
@@ -89,8 +90,39 @@ class Tensor:
 
     def __repr__(self):
         return f"Tensor has a shape of {self.data.shape}, and data = {self.data}"
+
+
+    def __matmul__(self,other):
+        other = other if isinstance(other,Tensor) else Tensor(other)
+        out = Tensor(self.data @ other.data,parents=(self,other))
+
+        def vjp():
+            self.grad += unbroadcast(out.grad @ other.data.T ,self.data.shape )
+            other.grad +=unbroadcast(self.data.T @ out.grad,other.data.shape)
+
+        out.vjp = vjp
+        return out
+
+
+    def __rmatmul__(self, other):
+        return Tensor(other) @ self
+
+
+
+    def sum(self,axis=None,keepdims=False):
+        out = Tensor(self.data.sum(axis=axis,keepdims=keepdims),parents=(self,))
+
+        def vjp():
+            grad = out.grad
+            if axis is not None and not keepdims:
+                axes = [axis] if isinstance(axis,int) else sorted(axis)
+                for ax in axes:
+                    grad = np.expand_dims(grad,axis=ax)
+
+            self.grad +=np.ones_like(self.data) * grad
+
+        out.vjp = vjp
+        return out
+    
     
 
-t =Tensor([1,3],)
-t + 1
-print(t)
