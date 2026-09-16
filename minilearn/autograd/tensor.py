@@ -136,3 +136,37 @@ class Tensor:
 
         return out
 
+    def __truediv__(self,other):
+        other = other if isinstance(other,Tensor) else Tensor(other)
+        return self * (other** -1.0)
+
+
+    def __rtruediv__(self, other):
+        return Tensor(other) / self
+
+    def relu(self):
+        out = Tensor(np.maximum(0.0,self.data),parents=(self,))
+        def vjp():
+            self.grad +=(self.data > 0.0) *out.grad
+        out.vjp = vjp
+        return out
+
+
+    def reshape(self,*shape):
+        new_shape = shape[0] if isinstance(shape[0],(list,tuple)) else shape
+        out = Tensor(self.data.reshape(new_shape),parents=(self,))
+        def vjp():
+            self.grad += out.grad.reshape(self.data.shape)
+        out.vjp = vjp
+        return out
+
+
+    def T(self):
+        out = Tensor(self.data.T,parents=(self,))
+        def vjp():
+            self.grad.T
+        out.vjp = vjp
+        return out
+
+    def zero_grad(self):
+        self.grad = np.zeros_like(self.data)
