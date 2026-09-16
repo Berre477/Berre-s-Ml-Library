@@ -124,5 +124,15 @@ class Tensor:
         out.vjp = vjp
         return out
     
-    
+    def __pow__ (self,power):
+        assert isinstance(power,(int,float)), "power must be an int or float"
+        out = Tensor(self.data ** power,parents=(self,))
+
+        def vjp():
+            grad_val = (power *(self.data **(power-1))) * out.grad
+            self.grad += unbroadcast(grad_val,self.data.shape)
+
+        out.vjp = vjp
+
+        return out
 
