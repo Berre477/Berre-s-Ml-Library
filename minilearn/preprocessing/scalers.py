@@ -11,5 +11,6 @@ class StandartScaler:
         self.std = np.std(X,axis = 0)
         return self
 
+    
     def transform(self,X):
         return (X -self.mean) / (self.std + self.eps)
