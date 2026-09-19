@@ -1,5 +1,11 @@
 import numpy as np 
 
+"""
+the dytpe parameter for every class  for the epsilon
+
+"""
+
+
 class StandartScaler:
     def __init__(self,dtype=np.float32):
         self.eps = np.finfo(dtype).eps
@@ -53,4 +59,18 @@ class  MaxAbsScaler:
     def fit_transform(self,X):
         return self.fit(X).transform(X)
     
-    
+class Normalizer:
+    def __init__(self,dtype=np.float32):
+        self.eps=np.finfo(dtype).eps
+
+    def fit(self,X):
+        return self
+
+    def transform(self,X):
+        l2_norms = np.linalg.norm(X,axis=1,keepdims=True)
+        return X /(l2_norms + self.eps)
+
+    def fit_transform(self,X):
+        return self.transform(X)
+
+
