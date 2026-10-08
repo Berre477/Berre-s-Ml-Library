@@ -85,3 +85,6 @@ class OneHotEncoder :
 
 
         return np.hstack(encoded_blocks)
+
+    def fit_transform(self, X):
+        return self.fit(X).transform(X)
