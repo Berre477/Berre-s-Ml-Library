@@ -23,6 +23,39 @@ class DecisionTreeClassifier:
         values ,counts = np.unique(y,return_counts=True)
         return values[np.argmax(counts)]
 
+    def gini(self,y):
+        n,counts = np.unique(y,return_counts=True)
+        p = counts / len(y)
+        return 1.0 -np.sum(p**2)
+    
+    def best_split(self,X,y):
+        best = -1.0
+        splitid,split_thresh = None,None
+        curr_impurity = self.gini(y)
+        n_samples,n_features = X.shape 
+        for feature_id in range(n_features):
+            X_columns = X[:,feature_id]
+            thresholds = np.unique(X.column)
+
+            for thresh in thresholds:
+                left = X_columns <= thresh
+                right = X_columns > thresh
+
+                n_left,n_right = np.sum(left),np.sum(right)
+                if 0 in (n_left,n_right):continue
+
+                gini_left = self.gini(y[left])
+                gini_right=self.gini(y[right])
+                c_impurity = (n_left/n_samples) * gini_left + (n_right/n_samples) * gini_right
+
+                gain = curr_impurity = c_impurity
+
+                if gain > best:
+                    best = gain
+                    splitid = feature_id
+                    split_thresh = thresh
+        return splitid,split_thresh
+
     def build_tree(self,X,y,depth):
         n_samples ,n_features = X.shape 
         n_labels = len(np.unique(y))
