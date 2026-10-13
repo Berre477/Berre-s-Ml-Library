@@ -64,4 +64,15 @@ class DecisionTreeClassifier:
             leaf_value = self.freq_class(y)
             return Node(value=leaf_value)
 
+        feature ,thresh = self.best_split(X,y)
+
+        if feature is None:
+            return Node(value=self.freq_class(y))
+        left = X[:,feature] <= thresh
+        right = X[:,feature] > thresh
+
+        left_child = self.build_tree(X[left],y[left],depth + 1)
+        right_child = self,self.build_tree(X[right],y[right],depth + 1)
+        return Node(feature=feature,threshold=thresh,left = left_child,right=right_child)
+
         
