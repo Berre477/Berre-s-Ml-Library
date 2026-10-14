@@ -89,7 +89,7 @@ class DecisionTreeClassifier:
 
 
     def fit(self,X,y):
-        X = np.asarray(X,dtype=np.float16)
+        X = np.asarray(X,dtype=np.float32)
         y = np.asarray(y,dtype=np.int64)
         self.root = self.build_tree(X,y,depth=0)
         return self
