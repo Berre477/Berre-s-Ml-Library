@@ -75,4 +75,23 @@ class DecisionTreeClassifier:
         right_child = self,self.build_tree(X[right],y[right],depth + 1)
         return Node(feature=feature,threshold=thresh,left = left_child,right=right_child)
 
+
+    def traverse_tree(self,x,node):
+        if node.is_leaf:
+            return node.value
+        if x[node.feature] <= node.threshold:
+            return self.traverse_tree(x,node.left)
+        return self.traverse_tree(x,node.right)
+
+    def predict(self,X):
+        X = np.asarray(X,dtype=np.float32)
+        return np.array([self._traverse(x, self.root) for x in X], dtype=np.int64)
+
+
+    def fit(self,X,y):
+        X = np.asarray(X,dtype=np.float16)
+        y = np.asarray(y,dtype=np.int64)
+        self.root = self.build_tree(X,y,depth=0)
+        return self
+
         
