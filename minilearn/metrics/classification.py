@@ -33,3 +33,24 @@ def confusion_matrix(ytrue,ypred,labels=None):
             c_idx = idx_map[predicted]
             cm[r_idx,c_idx] +=1
     return cm
+
+
+def precision_score(ytrue,ypred,poslabels=1):
+    true_arr = np.asarray(ytrue)
+    pred_arr = np.asarray(ypred)
+
+    true_pos = np.sum((true_arr == poslabels) and (pred_arr == poslabels))
+    false_pos = np.sum((ypred == poslabels) and (true_arr != poslabels))
+
+    # main formula TP / TP + FP
+    precision = true_pos /( true_pos + false_pos)
+    return precision
+
+def recall_score(ytrue,ypred,poslabels):
+    true_arr = np.asarray(ytrue)
+    pred_arr = np.asarray(ypred)
+
+    true_pos = np.sum((pred_arr == poslabels) and (true_arr == poslabels) )
+    false_pos = np.sum((pred_arr == poslabels) and (true_arr == poslabels))
+
+    return (true_pos / (true_pos + false_pos))
