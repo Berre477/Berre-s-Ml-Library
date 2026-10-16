@@ -9,7 +9,7 @@ def mean_squared_error(ytrue,ypred):
 def root_mean_squared_error(ytrue,ypred):
     return float(np.sqrt(mean_squared_error(ytrue,ypred)))
 
-def mean_absolute_error(ytrue,y_red):
+def mean_absolute_error(ytrue,y_pred):
     ytrue = np.asarray(ytrue,dtype=np.float32)
     ypred = np.asarray(ypred , dtype=np.float32)
     return float(np.mean(np.abs(ytrue - ypred)))
