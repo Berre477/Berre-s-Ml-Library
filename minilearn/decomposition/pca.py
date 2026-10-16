@@ -19,14 +19,11 @@ class PCA:
             raise ValueError(f"Expected a 2D array ,the shape is {X.shape}")
         
         number_of_samples , number_of_featues = X.shape
-        #max amount of components that you can have
         max_comp = min(number_of_samples,number_of_featues)
 
-        #chooses how many components to keep
         if self.n_components is None: number_of_components = max_comp
         else: number_of_components = min(int(self.n_components),max_comp)
 
-        #Calc the mean of each feature
         self.mean_features = np.mean(X,axis=0)
 
         centered_data = X - self.mean_features
@@ -36,6 +33,8 @@ class PCA:
 
         #finds the largest abs val in each component
         largest_val_idx = np.argmax(np.abs(directions),axis = 1)
+
         
+
 
         
