@@ -13,20 +13,24 @@ class PCA:
         X = np.asarray(X, dtype=np.float32)
         n_samples, n_features = X.shape
 
+        #Caps the data dimension by k if n_vomponents is to large or unconstrained
         if self.n_components is None:
             k = min(n_samples, n_features)
         else:
             k = min(self.n_components, n_samples, n_features)
 
+        #center the data arounfd the origin so axes are measure spread
         self.mean_ = np.mean(X, axis=0)
         X_centered = X - self.mean_
 
+        # Economoy SVD avoids froming covarience matrix
         U, S, Vt = np.linalg.svd(X_centered, full_matrices=False)
         max_abs_cols = np.argmax(np.abs(Vt), axis=1)
         signs = np.sign(Vt[np.arange(Vt.shape[0]), max_abs_cols])
         Vt *= signs[:, np.newaxis]
         self.components_ = Vt[:k]
 
+        #eigenvalues of covarience 
         total_variance = np.sum((S ** 2) / (n_samples - 1))
         self.explained_variance_ = ((S[:k] ** 2) / (n_samples - 1))
         self.explained_variance_ratio_ = self.explained_variance_ / total_variance
