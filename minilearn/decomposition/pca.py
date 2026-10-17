@@ -33,6 +33,23 @@ class PCA:
 
         #finds the largest abs val in each component
         largest_val_idx = np.argmax(np.abs(directions),axis = 1)
+        row_idx = np.arange(directions.shape[0])
+        correct = np.sign(directions[row_idx,largest_val_idx])
+
+        self.components = directions[:number_of_components]
+
+        #gets the eigenvalues of the covariance od the matrx singular_val **2 / (n - 1)
+        d = max(number_of_samples -1 ,1)
+        eigenvalues = (singular_val ** 2) / d
+        tot_varience = np.sum(eigenvalues)
+        self.varience = eigenvalues[:number_of_components]
+
+        if tot_varience > 0: self.varience_ratio = self.varience / tot_varience
+        else: self.varience_ratio = np.zeros(number_of_components,dtype=np.float32)
+        return self
+
+        
+
 
         
 
