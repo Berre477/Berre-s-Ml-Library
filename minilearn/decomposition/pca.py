@@ -48,6 +48,16 @@ class PCA:
         else: self.varience_ratio = np.zeros(number_of_components,dtype=np.float32)
         return self
 
+    def transform(self,X):
+        if self.components is None : raise ValueError("Run fit before transforming the data")
+        X = np.asarray(X,dtype=np.float32)
+        projection = (X - self.mean_features).dot(self.components.T)
+        return projection
+
+    def fit_transform(self,X,y=None):
+        return self.fit(X,y).transform(X)
+    
+
         
 
 
