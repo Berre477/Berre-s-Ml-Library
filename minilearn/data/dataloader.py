@@ -20,4 +20,15 @@ class Dataloader:
             if self.drop_last:
                  return n // self.batch_size
             return (n + self.batch_size - 1) // self.batch_size
+
+    def __iter__(self):
+         n = len(self.dataset)
+         i = np.arange(n)
+
+         for idx in range(0,n,self.batch_size):
+              batch_idx = i[idx : idx + self.batch_size]
+              if self.drop_last and len(batch_idx) < self.batch_size:continue
+              yield self.dataset[batch_idx]
+              
+                   
         
