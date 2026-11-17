@@ -7,6 +7,15 @@ class Kmeans:
         self.max_iter = int(max_iter)
         self.tol = float(tol)
         self.random_state = random_state
+        self.centroids = None
+        self.label = None
+        self.inertia =None
+        self.iter_run = 0
 
-        
+
+    def pick_in_centroid(self,X,rng):
+        rows ,cols = X.shape
+        pick = np.zeros((self.n_clusters , cols),dtype=np.float32)
+
+
         
